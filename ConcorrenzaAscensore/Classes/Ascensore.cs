@@ -8,12 +8,17 @@ namespace ConcorrenzaAscensore.Classes
 {
     public class Ascensore
     {
-        public static int NUMERO_MASSIMO_CLIENTI = 1;
+        public const int NUMERO_MASSIMO_CLIENTI = 1;
 
         private Queue<Persona> ClientiAscensore
         {
             get;
             set;
+        }
+
+        public uint CurrentPiano
+        {
+            get; set;
         }
 
         public void AggiungiPersona(Persona p)

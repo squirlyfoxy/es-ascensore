@@ -1,0 +1,15 @@
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\bin\Debug\ConcorrenzaAscensore.exe.config
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\bin\Debug\ConcorrenzaAscensore.exe
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\bin\Debug\ConcorrenzaAscensore.pdb
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.csprojAssemblyReference.cache
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\MainWindow.g.cs
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\App.g.cs
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore_MarkupCompile.cache
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore_MarkupCompile.lref
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\MainWindow.baml
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.g.resources
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.Properties.Resources.resources
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.csproj.GenerateResource.cache
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.csproj.CoreCompileInputs.cache
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.exe
+C:\Users\leonardo.baldazzi\source\repos\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.pdb

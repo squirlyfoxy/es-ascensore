@@ -63,6 +63,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\Ascensore.cs" />
+    <Compile Include="Classes\Persona.cs" />
+    <Compile Include="Classes\PrenotazioneAscensore.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -93,6 +96,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Src\ascensore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Src\soffitto.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Src\omino.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
