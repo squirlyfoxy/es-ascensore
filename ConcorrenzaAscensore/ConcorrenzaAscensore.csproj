@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="Classes\Ascensore.cs" />
     <Compile Include="Classes\Persona.cs" />
+    <Compile Include="Classes\PersonaImage.cs" />
     <Compile Include="Classes\PrenotazioneAscensore.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
