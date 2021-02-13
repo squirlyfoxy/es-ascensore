@@ -11,6 +11,11 @@ namespace ConcorrenzaAscensore.Classes
 {
     public class PersonaImage
     {
+        public enum Stati
+        {
+            Non_Ancora_Arrivato_Ascensore, Richiesta, Whait, Arrivato
+        }
+
         public int Piano
         {
             get;
@@ -23,10 +28,18 @@ namespace ConcorrenzaAscensore.Classes
             set;
         }
 
+        public Stati Stato
+        {
+            get;
+            set;
+        }
+
         public PersonaImage(int piano, Image im)
         {
             Piano = piano;
             Immagine = im;
+
+            Stato = Stati.Non_Ancora_Arrivato_Ascensore;
         }
     }
 }
