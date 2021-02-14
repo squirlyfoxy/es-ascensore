@@ -13,7 +13,7 @@ namespace ConcorrenzaAscensore.Classes
     {
         public enum Stati
         {
-            Non_Ancora_Arrivato_Ascensore, Richiesta, Whait, Arrivato
+            Non_Ancora_Arrivato_Ascensore, Richiesta, In_Viaggio, Arrivato
         }
 
         public int Piano

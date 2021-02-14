@@ -85,7 +85,7 @@ namespace ConcorrenzaAscensore
             threadSpawnOmini.Start();
         }
 
-        //FIX: UNO DEI DUE THREAD VA IN CONFLITTO CON QUALCOSA E DI CONSEGUENZA, DOPO AVER FATTO SPAWNARE UNO/DUE OMINI, I THREAD "IMPLODONO"
+        //FIX (FIXATO IL 14/02/2021): UNO DEI DUE THREAD VA IN CONFLITTO CON QUALCOSA E DI CONSEGUENZA, DOPO AVER FATTO SPAWNARE UNO/DUE OMINI, I THREAD "IMPLODONO", AVVIENE QUANDO IL RIMO OMINO ARRIVA A DESTINAZIONE
 
         private void MuoviOmini()
         {
@@ -96,84 +96,133 @@ namespace ConcorrenzaAscensore
                 {
                     for (int i = 0; i < ominiImage.Count; i++)
                     {
-                        //Controllo se devo arrivare ancora a destinazione
-                        if (ominiImage[i].Stato == PersonaImage.Stati.Non_Ancora_Arrivato_Ascensore)
+                        if (ominiImage[i].Stato == PersonaImage.Stati.Arrivato)
                         {
-                            //MUOVI
-                            int forzaUscita = 0;
+                            ///
+                            /// Una volta arrivto a destinazione, creo un nuovo oggetto persona, lo aggiungo alla queue dell'ascensore e ne cambio lo stato 
+                            ///
 
-                            int p = 0;
+                            semaforo.WaitOne();
 
-                            while (true)
+                            try
                             {
-                                Thread.Sleep(100);
+                                Persona persona = new Persona(ominiImage[i].Piano);
+                                persona.Immagine = ominiImage[i].Immagine;
 
-                                //Controllo forza uscita
-                                if (forzaUscita >= 20)
-                                    break;
+                                //Crea la prenotazione per l'ascensore
+                                Random rnd = new Random();
+                                int piano;
 
-                                semaforo.WaitOne();
-
-                                Thickness margine = new Thickness();
-
-                                this.Dispatcher.Invoke(new Action(() =>
+                                do
                                 {
-                                    p = g.Children.IndexOf(ominiImage[i].Immagine);
-                                    margine = (g.Children[p] as Image).Margin;
-                                }));
+                                    piano = rnd.Next(1, 6);
+                                } while (piano == persona.StartPiano); //Controllo che non sia lo stesso piano in cui mi trovo adesso
 
-                                //Controllo uscita
-                                if (ominiImage[i].Piano == 1 && (margine.Left <= OMINO_PIANO_1.Left && margine.Right >= OMINO_PIANO_1.Right)) //Omino al primo piano
+                                PrenotazioneAscensore pa = new PrenotazioneAscensore(piano);
+                                persona.PrenotazioneAscensore = pa;
+
+                                Ascensore.AggiungiPersona(persona); //Aggiungo la persona
+
+                                ominiImage[i].Stato = PersonaImage.Stati.Richiesta;
+
+                                Debug.WriteLine("Omino arrivato a destinazione, prenotazione per il piano: " + piano);
+
+                                ///
+                                /// Controlla lo stato del thread dell'ascensore, se non è ancora partito fallo partire
+                                ///
+
+                                lock (LockObject)
                                 {
-                                    ominiImage[i].Stato = PersonaImage.Stati.Arrivato;
-                                    break;
+                                    if (threadAscensore.IsAlive == false)
+                                        threadAscensore.Start();
                                 }
-
-                                if (ominiImage[i].Piano == 2 && (margine.Left <= OMINO_PIANO_2.Left && margine.Right >= OMINO_PIANO_2.Right)) //Omino al secondo piano
-                                {
-                                    ominiImage[i].Stato = PersonaImage.Stati.Arrivato;
-                                    break;
-                                }
-
-                                if (ominiImage[i].Piano == 3 && (margine.Left <= OMINO_PIANO_3.Left && margine.Right >= OMINO_PIANO_3.Right)) //Omino al terzo piano
-                                {
-                                    ominiImage[i].Stato = PersonaImage.Stati.Arrivato;
-                                    break;
-                                }
-
-                                if (ominiImage[i].Piano == 4 && (margine.Left <= OMINO_PIANO_4.Left && margine.Right >= OMINO_PIANO_4.Right)) //Omino al quarto piano
-                                {
-                                    ominiImage[i].Stato = PersonaImage.Stati.Arrivato;
-                                    break;
-                                }
-
-                                if (ominiImage[i].Piano == 5 && (margine.Left <= OMINO_PIANO_5.Left && margine.Right >= OMINO_PIANO_5.Right)) //Omino al quinto piano
-                                {
-                                    ominiImage[i].Stato = PersonaImage.Stati.Arrivato;
-                                    break;
-                                }
-
-                                //Sposta
-                                this.Dispatcher.Invoke(new Action(() =>
-                                {
-                                    double newLeft = (g.Children[p] as Image).Margin.Left - 10;
-                                    double newRight = (g.Children[p] as Image).Margin.Right + 10;
-
-                                    (g.Children[p] as Image).Margin = new Thickness(newLeft, (g.Children[p] as Image).Margin.Top, newRight, (g.Children[p] as Image).Margin.Bottom);
-                                }));
-
-                                semaforo.Release();
-
-                                forzaUscita++;
-
-                                //Debug.WriteLine(ominiImage[i].Immagine.Margin);
+                            } catch(AscensorePienoException) 
+                            {
+                                /* SE CADO QUI VUOL DIRE CHE L'ASCENSORE è PIENO E QUINDI NON POSSO RICHIEDERLO FINO A QUANDO NON SI SVUOTA */
+                                Debug.WriteLine("Ascensore pieno");
                             }
 
-                            //Aggiorna
-                            this.Dispatcher.Invoke(new Action(() =>
+                            semaforo.Release();
+                        }
+                        else
+                        {
+                            //Controllo se devo arrivare ancora a destinazione
+                            if (ominiImage[i].Stato == PersonaImage.Stati.Non_Ancora_Arrivato_Ascensore)
                             {
-                                ominiImage[i].Immagine = (g.Children[p] as Image);
-                            }));
+                                //MUOVI
+                                int forzaUscita = 0; //Serve per dare una senzazione di "stacco" a chi osserva la simulazione
+
+                                int p = 0;
+
+                                while (true)
+                                {
+                                    Thread.Sleep(100);
+
+                                    //Controllo forza uscita
+                                    if (forzaUscita >= 40)
+                                        break;
+
+                                    Thickness margine = new Thickness();
+
+                                    this.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        p = g.Children.IndexOf(ominiImage[i].Immagine);
+                                        margine = (g.Children[p] as Image).Margin;
+                                    }));
+
+                                    //Controllo uscita
+                                    if (ominiImage[i].Piano == 1 && (margine.Left <= OMINO_PIANO_1.Left && margine.Right >= OMINO_PIANO_1.Right)) //Omino al primo piano
+                                    {
+                                        ominiImage[i].Stato = PersonaImage.Stati.Arrivato;
+                                        break;
+                                    }
+
+                                    if (ominiImage[i].Piano == 2 && (margine.Left <= OMINO_PIANO_2.Left && margine.Right >= OMINO_PIANO_2.Right)) //Omino al secondo piano
+                                    {
+                                        ominiImage[i].Stato = PersonaImage.Stati.Arrivato;
+                                        break;
+                                    }
+
+                                    if (ominiImage[i].Piano == 3 && (margine.Left <= OMINO_PIANO_3.Left && margine.Right >= OMINO_PIANO_3.Right)) //Omino al terzo piano
+                                    {
+                                        ominiImage[i].Stato = PersonaImage.Stati.Arrivato;
+                                        break;
+                                    }
+
+                                    if (ominiImage[i].Piano == 4 && (margine.Left <= OMINO_PIANO_4.Left && margine.Right >= OMINO_PIANO_4.Right)) //Omino al quarto piano
+                                    {
+                                        ominiImage[i].Stato = PersonaImage.Stati.Arrivato;
+                                        break;
+                                    }
+
+                                    if (ominiImage[i].Piano == 5 && (margine.Left <= OMINO_PIANO_5.Left && margine.Right >= OMINO_PIANO_5.Right)) //Omino al quinto piano
+                                    {
+                                        ominiImage[i].Stato = PersonaImage.Stati.Arrivato;
+                                        break;
+                                    }
+
+                                    semaforo.WaitOne();
+
+                                    //Sposta
+                                    this.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        double newLeft = (g.Children[p] as Image).Margin.Left - 5;
+                                        double newRight = (g.Children[p] as Image).Margin.Right + 5;
+
+                                        (g.Children[p] as Image).Margin = new Thickness(newLeft, (g.Children[p] as Image).Margin.Top, newRight, (g.Children[p] as Image).Margin.Bottom);
+                                    }));
+
+                                    semaforo.Release();
+
+                                    forzaUscita++;
+                                }
+
+                                //Aggiorna
+                                this.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    ominiImage[i].Immagine = (g.Children[p] as Image);
+                                }));
+                            }
                         }
                     }
                 }
@@ -195,7 +244,7 @@ namespace ConcorrenzaAscensore
 
             while (whileState)
             {
-                Thread.Sleep(5000); //Ogni x secondi
+                Thread.Sleep(10000); //Ogni x secondi
 
                 //Spawna
                 Random rnd = new Random();
@@ -203,7 +252,7 @@ namespace ConcorrenzaAscensore
 
                 this.Dispatcher.Invoke(new Action(() =>
                 {
-                    Debug.WriteLine("Spawned");
+                    Debug.WriteLine("Nuovo omino");
 
                     //Oggetti
                     Image toAdd = new Image();
@@ -268,7 +317,28 @@ namespace ConcorrenzaAscensore
 
         private void ProcessaAscensore()
         {
+            //IL SEGUENTE THREAD PROCESSA OGNI SINGOLA PRENOTAZIONE PER L'ASCENSORE; E LO FA MUOVERE
 
+            while (whileState)
+            {
+                Thread.Sleep(100);
+                for (int i = 0; i < ominiImage.Count; i++)
+                {
+                    semaforo.WaitOne();
+
+                    if(ominiImage[i].Stato == PersonaImage.Stati.Richiesta)
+                    {
+
+                    }
+
+                    semaforo.Release();
+                }
+            }
+        }
+
+        private static int GetPosizionePersonaAscensoreDentroLista()
+        {
+            throw new NotImplementedException();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
