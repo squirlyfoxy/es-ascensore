@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace ConcorrenzaAscensore.Classes
 {
+    public class AscensorePienoException : Exception
+    {
+        public AscensorePienoException() : base()
+        {
+
+        }
+    }
     public class Ascensore
     {
         public const int NUMERO_MASSIMO_CLIENTI = 1;
@@ -24,7 +31,7 @@ namespace ConcorrenzaAscensore.Classes
         public void AggiungiPersona(Persona p)
         {
             if (GetNumeroClienti() == NUMERO_MASSIMO_CLIENTI)
-                throw new Exception("Raggiunta la capacità masisma dell'ascensore");
+                throw new AscensorePienoException();
 
             ClientiAscensore.Enqueue(p);
         }
