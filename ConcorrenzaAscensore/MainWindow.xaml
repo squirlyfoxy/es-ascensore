@@ -12,7 +12,7 @@
         <Image HorizontalAlignment="Left" Height="100" Margin="128,278,0,0" VerticalAlignment="Top" Width="664" Source="Src/soffitto.png"/>
         <Image HorizontalAlignment="Left" Height="100" Margin="128,378,0,0" VerticalAlignment="Top" Width="664" Source="Src/soffitto.png"/>
         <Image HorizontalAlignment="Left" Height="100" Margin="128,478,0,0" VerticalAlignment="Top" Width="664" Source="Src/soffitto.png"/>
-        <Image x:Name="imgAscensore" HorizontalAlignment="Left" Height="100" Margin="0,484,0,0" VerticalAlignment="Top" Width="123" Source="Src/ascensore.png"/>
+        <Image x:Name="imgAscensore" HorizontalAlignment="Left" Margin="0,484,0,0" Width="123" Source="Src/ascensore.png"/>
         <Image Margin="128,78,566,406"/>
     </Grid>
 </Window>

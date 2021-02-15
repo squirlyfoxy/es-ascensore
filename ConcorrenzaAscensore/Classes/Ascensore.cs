@@ -13,6 +13,7 @@ namespace ConcorrenzaAscensore.Classes
 
         }
     }
+
     public class Ascensore
     {
         public const int NUMERO_MASSIMO_CLIENTI = 1;
@@ -29,11 +30,16 @@ namespace ConcorrenzaAscensore.Classes
         }
 
         public void AggiungiPersona(Persona p)
-        {
+        {/*
             if (GetNumeroClienti() == NUMERO_MASSIMO_CLIENTI)
-                throw new AscensorePienoException();
+                throw new AscensorePienoException();*/
 
             ClientiAscensore.Enqueue(p);
+        }
+
+        public Persona PekkaNuovaRichiesta()
+        {
+                return ClientiAscensore.Peek();
         }
 
         public Persona ProcessaProssimaRichiesta()

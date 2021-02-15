@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
+//Per il debug
 using System.Diagnostics;
 
 //Thread
@@ -28,12 +30,14 @@ namespace ConcorrenzaAscensore
     public partial class MainWindow : Window
     {
         //Posizioni da raggiungere per l'ascensore per ogni piano
+
+        //TODO: AGGIUNGERE COORDINATE BOTTOM
         private Thickness ASCENSORE_PIANO_0 = new Thickness(0, 484, 0, 0);
-        private Thickness ASCENSORE_PIANO_1 = new Thickness(0, 416, 0, 0);
-        private Thickness ASCENSORE_PIANO_2 = new Thickness(0, 318, 0, 0);
-        private Thickness ASCENSORE_PIANO_3 = new Thickness(0, 220, 0, 0);
-        private Thickness ASCENSORE_PIANO_4 = new Thickness(0, 216, 0, 0);
-        private Thickness ASCENSORE_PIANO_5 = new Thickness(0, 10, 0, 0);
+        private Thickness ASCENSORE_PIANO_1 = new Thickness(0, 422, 0, 62);
+        private Thickness ASCENSORE_PIANO_2 = new Thickness(0, 318, 0, 166);
+        private Thickness ASCENSORE_PIANO_3 = new Thickness(0, 222, 0, 262);
+        private Thickness ASCENSORE_PIANO_4 = new Thickness(0, 118, 0, 366);
+        private Thickness ASCENSORE_PIANO_5 = new Thickness(0, 10, 0, 474);
 
         //Posizione da raggiungere per gli omini per ogni piano
         private Thickness OMINO_PIANO_1 = new Thickness(128,384,566,106);
@@ -42,7 +46,7 @@ namespace ConcorrenzaAscensore
         private Thickness OMINO_PIANO_4 = new Thickness(128,78,566,406);
         private Thickness OMINO_PIANO_5 = new Thickness(128,0,566,484);
 
-        //Posizione di spawn
+        //Posizione di spawn per gli omini
         private Thickness OMINO_SPAWN_PIANO_1 = new Thickness(694, 384, 0, 106);
         private Thickness OMINO_SPAWN_PIANO_2 = new Thickness(694, 283, 0, 201);
         private Thickness OMINO_SPAWN_PIANO_3 = new Thickness(694, 178, 0, 306);
@@ -94,6 +98,8 @@ namespace ConcorrenzaAscensore
                 //Thread.Sleep(100);
                 while (whileState)
                 {
+                    Thread.Sleep(300);
+
                     for (int i = 0; i < ominiImage.Count; i++)
                     {
                         if (ominiImage[i].Stato == PersonaImage.Stati.Arrivato)
@@ -118,8 +124,7 @@ namespace ConcorrenzaAscensore
                                     piano = rnd.Next(1, 6);
                                 } while (piano == persona.StartPiano); //Controllo che non sia lo stesso piano in cui mi trovo adesso
 
-                                PrenotazioneAscensore pa = new PrenotazioneAscensore(piano);
-                                persona.PrenotazioneAscensore = pa;
+                                persona.Prenota(piano);
 
                                 Ascensore.AggiungiPersona(persona); //Aggiungo la persona
 
@@ -131,12 +136,10 @@ namespace ConcorrenzaAscensore
                                 /// Controlla lo stato del thread dell'ascensore, se non è ancora partito fallo partire
                                 ///
 
-                                lock (LockObject)
-                                {
-                                    if (threadAscensore.IsAlive == false)
-                                        threadAscensore.Start();
-                                }
-                            } catch(AscensorePienoException) 
+                                if (threadAscensore.IsAlive == false)
+                                    threadAscensore.Start();
+                            }
+                            catch (AscensorePienoException)
                             {
                                 /* SE CADO QUI VUOL DIRE CHE L'ASCENSORE è PIENO E QUINDI NON POSSO RICHIEDERLO FINO A QUANDO NON SI SVUOTA */
                                 Debug.WriteLine("Ascensore pieno");
@@ -315,30 +318,167 @@ namespace ConcorrenzaAscensore
             }
         }
 
+        const int VELOCITA_MOVIMENTO_ASCENSORE = 2;
+
         private void ProcessaAscensore()
         {
             //IL SEGUENTE THREAD PROCESSA OGNI SINGOLA PRENOTAZIONE PER L'ASCENSORE; E LO FA MUOVERE
 
             while (whileState)
             {
-                Thread.Sleep(100);
-                for (int i = 0; i < ominiImage.Count; i++)
+                //Thread.Sleep(200);
+                if (Ascensore.GetNumeroClienti() > 0)
                 {
-                    semaforo.WaitOne();
+                    Persona p = Ascensore.PekkaNuovaRichiesta();
+                    int posLista = GetPosizionePersonaAscensoreDentroLista(p);
+                    PersonaImage pi = ominiImage[posLista];
 
-                    if(ominiImage[i].Stato == PersonaImage.Stati.Richiesta)
+                    if (pi.Stato == PersonaImage.Stati.Richiesta)
                     {
+                        //Muovi ascensore alla posizione desiderata
+                        while (true)
+                        {
+                            Thread.Sleep(100);
 
+                            semaforo.WaitOne();
+
+                            //Piano corrente
+                            this.Dispatcher.Invoke(new Action(() =>
+                            {
+                                if (Ascensore.CurrentPiano != 1 && (imgAscensore.Margin == ASCENSORE_PIANO_1))
+                                    Ascensore.CurrentPiano = 1;
+                                else if (Ascensore.CurrentPiano != 2 && (imgAscensore.Margin == ASCENSORE_PIANO_2))
+                                    Ascensore.CurrentPiano = 2;
+                                else if (Ascensore.CurrentPiano != 3 && (imgAscensore.Margin == ASCENSORE_PIANO_3))
+                                    Ascensore.CurrentPiano = 3;
+                                else if (Ascensore.CurrentPiano != 4 && (imgAscensore.Margin == ASCENSORE_PIANO_4))
+                                    Ascensore.CurrentPiano = 4;
+                                else if (Ascensore.CurrentPiano != 5 && (imgAscensore.Margin == ASCENSORE_PIANO_5))
+                                    Ascensore.CurrentPiano = 5;
+                            }));
+
+                            //Controllo uscite
+                            if (Ascensore.CurrentPiano == p.StartPiano)
+                            {
+                                pi.Stato = PersonaImage.Stati.In_Viaggio;
+                                ominiImage[posLista] = pi;
+
+                                g.Children.Remove(ominiImage[posLista].Immagine); //Rimuovi dalla grafica
+
+                                semaforo.Release();
+
+                                Debug.WriteLine("In viaggio");
+
+                                break;
+                            }
+
+                            //Muovo ascensore
+                            this.Dispatcher.Invoke(new Action(() =>
+                            {
+                                Thickness marginAscensoreVecchio = imgAscensore.Margin;
+
+                                if (p.PrenotazioneAscensore.Piano >= Ascensore.CurrentPiano)
+                                {
+                                    marginAscensoreVecchio.Top -= VELOCITA_MOVIMENTO_ASCENSORE;
+                                    marginAscensoreVecchio.Bottom += VELOCITA_MOVIMENTO_ASCENSORE;
+                                }
+                                else
+                                {
+                                    marginAscensoreVecchio.Top += VELOCITA_MOVIMENTO_ASCENSORE;
+                                    marginAscensoreVecchio.Bottom -= VELOCITA_MOVIMENTO_ASCENSORE;
+                                }
+
+                                imgAscensore.Margin = marginAscensoreVecchio;
+                            }));
+
+                            semaforo.Release();
+                        }
                     }
+                    else if (pi.Stato == PersonaImage.Stati.In_Viaggio)
+                    {
+                        while (true)
+                        {
+                            Thread.Sleep(100);
 
-                    semaforo.Release();
+                            semaforo.WaitOne();
+
+                            //Piano corrente
+                            this.Dispatcher.Invoke(new Action(() =>
+                            {
+                                if (Ascensore.CurrentPiano != 1 && (imgAscensore.Margin == ASCENSORE_PIANO_1))
+                                    Ascensore.CurrentPiano = 1;
+                                else if (Ascensore.CurrentPiano != 2 && (imgAscensore.Margin == ASCENSORE_PIANO_2))
+                                    Ascensore.CurrentPiano = 2;
+                                else if (Ascensore.CurrentPiano != 3 && (imgAscensore.Margin == ASCENSORE_PIANO_3))
+                                    Ascensore.CurrentPiano = 3;
+                                else if (Ascensore.CurrentPiano != 4 && (imgAscensore.Margin == ASCENSORE_PIANO_4))
+                                    Ascensore.CurrentPiano = 4;
+                                else if (Ascensore.CurrentPiano != 5 && (imgAscensore.Margin == ASCENSORE_PIANO_5))
+                                    Ascensore.CurrentPiano = 5;
+                            }));
+
+                            //Controllo uscite
+                            if (Ascensore.CurrentPiano == p.PrenotazioneAscensore.Piano)
+                            {
+                                this.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    ominiImage.Remove(pi);
+
+                                    Ascensore.ProcessaProssimaRichiesta();
+                                }));
+
+                                semaforo.Release();
+
+                                Debug.WriteLine("Arrivato a destinazione");
+
+                                break;
+                            }
+
+                            //Muovo ascensore
+                            this.Dispatcher.Invoke(new Action(() =>
+                            {
+                                Thickness marginAscensoreVecchio = imgAscensore.Margin;
+
+                                if (p.PrenotazioneAscensore.Piano >= Ascensore.CurrentPiano)
+                                {
+                                    marginAscensoreVecchio.Top -= VELOCITA_MOVIMENTO_ASCENSORE;
+                                    marginAscensoreVecchio.Bottom += VELOCITA_MOVIMENTO_ASCENSORE;
+                                }
+                                else
+                                {
+                                    marginAscensoreVecchio.Top += VELOCITA_MOVIMENTO_ASCENSORE;
+                                    marginAscensoreVecchio.Bottom -= VELOCITA_MOVIMENTO_ASCENSORE;
+                                }
+
+                                imgAscensore.Margin = marginAscensoreVecchio;
+                            }));
+
+                            semaforo.Release();
+                        }
+                    }
                 }
             }
         }
 
-        private static int GetPosizionePersonaAscensoreDentroLista()
+        private int GetPosizionePersonaAscensoreDentroLista(Persona p)
         {
-            throw new NotImplementedException();
+            semaforo.WaitOne();
+
+            int toRet = 0;
+
+            foreach (PersonaImage pi in ominiImage)
+            {
+                if(p.Equals(pi))
+                {
+                    break;
+                }
+
+                toRet++;
+            }
+
+            semaforo.Release();
+
+            return toRet;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
