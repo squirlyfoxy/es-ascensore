@@ -7,12 +7,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="613.342" Width="800" ResizeMode="NoResize" Closing="Window_Closing">
     <Grid x:Name="g">
+        <Image HorizontalAlignment="Left" Height="621" Margin="123,0,0,-37" VerticalAlignment="Top" Width="671" Source="Src/casa-sfondo.png" Stretch="Fill"/>
         <Image HorizontalAlignment="Left" Height="100" Margin="128,73,0,0" VerticalAlignment="Top" Width="664" Source="Src/soffitto.png"/>
         <Image HorizontalAlignment="Left" Height="100" Margin="128,178,0,0" VerticalAlignment="Top" Width="664" Source="Src/soffitto.png"/>
         <Image HorizontalAlignment="Left" Height="100" Margin="128,278,0,0" VerticalAlignment="Top" Width="664" Source="Src/soffitto.png"/>
         <Image HorizontalAlignment="Left" Height="100" Margin="128,378,0,0" VerticalAlignment="Top" Width="664" Source="Src/soffitto.png"/>
         <Image HorizontalAlignment="Left" Height="100" Margin="128,478,0,0" VerticalAlignment="Top" Width="664" Source="Src/soffitto.png"/>
-        <Image x:Name="imgAscensore" HorizontalAlignment="Left" Margin="0,484,0,0" Width="123" Source="Src/ascensore.png"/>
-        <Image Margin="128,78,566,406"/>
+        <Image HorizontalAlignment="Left" Height="584" VerticalAlignment="Top" Width="123" Source="Src/muro-ascensore.png" Stretch="None"/>
+        <Image x:Name="imgAscensore" HorizontalAlignment="Left" Margin="0,483,0,0" Width="123" Height="101" Source="Src/ascensore.png" Stretch="UniformToFill"/>
     </Grid>
 </Window>

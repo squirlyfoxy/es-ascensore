@@ -107,5 +107,17 @@
   <ItemGroup>
     <Resource Include="Src\omino.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Src\nuovo_omino.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Src\muro-ascensore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Src\ascensore-riempito.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Src\casa-sfondo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

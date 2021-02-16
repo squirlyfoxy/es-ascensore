@@ -31,7 +31,6 @@ C:\Users\leonardo.baldazzi\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\ob
 C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\bin\Debug\ConcorrenzaAscensore.exe.config
 C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\bin\Debug\ConcorrenzaAscensore.exe
 C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\bin\Debug\ConcorrenzaAscensore.pdb
-C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.csprojAssemblyReference.cache
 C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\MainWindow.g.cs
 C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\App.g.cs
 C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore_MarkupCompile.cache
@@ -43,3 +42,4 @@ C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\Conc
 C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.csproj.CoreCompileInputs.cache
 C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.exe
 C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.pdb
+C:\Users\foxch\OneDrive\ConcorrenzaAscensore\ConcorrenzaAscensore\obj\Debug\ConcorrenzaAscensore.csprojAssemblyReference.cache
